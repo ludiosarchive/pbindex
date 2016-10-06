@@ -2,14 +2,14 @@
 
 import os
 import re
+import sys
 import html
 import calendar
 
 nums = list(int(s) for s in os.listdir("predictionbook"))
 nums.sort()
 
-print('''
-
+print('''\
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,11 +31,29 @@ print('''
 		td {
 			white-space: nowrap;
 		}
+		.unknown {
+
+		}
+		.withdrawn {
+			background-color: #777;
+			font-size: 80%;
+			letter-spacing: -0.5px;
+			color: white;
+			text-align: center;
+		}
+		.right {
+			background-color: #D3FAC8;
+			text-align: center;
+		}
+		.wrong {
+			background-color: #FAC8D4;
+			text-align: center;
+		}
 	</style>
 </head>
 <body>
 <table>
-<tr><td>#</td><td>predicted</td><td>known</td><td>user</td><td>prediction</td></tr>
+<tr><td>#</td><td>predicted</td><td>known</td><td>user</td><td>judged</td><td>prediction</td></tr>
 ''')
 
 def get_ymd_and_url(date):
@@ -68,8 +86,18 @@ for n in nums:
 		known_date = re.findall('known <span title="(.*?)" class="date">', content)[0]
 		known_ymd, _ = get_ymd_and_url(known_date)
 
-		print('<tr><td><a href="%s">%s</a></td><td><a href="%s">%s</a></td><td>%s</td><td><a href="%s">%s</a></td><td><a href="%s">%s</a></td></tr>' % (
-			url, n, date_url, predicted_ymd, known_ymd, user_url, username, url, html.escape(prediction)))
+		judgements = re.findall("<span class='outcome'>(.*?)</span>", content)
+		judged = "<td></td>"
+		if '<h1 class="withdrawn">' in content:
+			judged = '<td class="withdrawn">Withdrawn</td>'
+		elif judgements:
+			if judgements[-1] == "right":
+				judged = '<td class="right">Right</td>'
+			elif judgements[-1] == "wrong":
+				judged = '<td class="wrong">Wrong</td>'
+
+		print('<tr><td><a href="%s">%s</a></td><td><a href="%s">%s</a></td><td>%s</td><td><a href="%s">%s</a></td>%s<td><a href="%s">%s</a></td></tr>' % (
+			url, n, date_url, predicted_ymd, known_ymd, user_url, username, judged, url, html.escape(prediction)))
 
 print('''
 </table>
