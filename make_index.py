@@ -6,7 +6,7 @@ import sys
 import html
 import calendar
 
-nums = list(int(s) for s in os.listdir("predictionbook"))
+nums = list(int(s) for s in os.listdir("predictionbook") if s != ".urls")
 nums.sort()
 
 print('''\
