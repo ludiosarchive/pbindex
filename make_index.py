@@ -76,9 +76,9 @@ for n in nums:
 		title = html.unescape(title)
 		prediction = title.replace("PredictionBook: ", "", 1)
 		user_url, username = re.findall('<a class="user" href="(.*?)">(.*?)</a>', content)[0]
-		user_url = 'http://predictionbook.com' + user_url
+		user_url = 'https://predictionbook.com' + user_url
 
-		url = 'http://predictionbook.com/predictions/%s' % (n,)
+		url = 'https://predictionbook.com/predictions/%s' % (n,)
 
 		predicted_date = re.findall('<span title="(.*?)" class="date">', content)[0]
 		predicted_ymd, date_url = get_ymd_and_url(predicted_date)
