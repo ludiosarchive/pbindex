@@ -11,4 +11,5 @@ for i in $(seq $last_prediction); do
 	echo "https://predictionbook.com/predictions/$i" >> .urls
 done
 
-wget -i .urls
+# Ignore redirects from private predictions to homepage
+wget --max-redirect 0 -i .urls
