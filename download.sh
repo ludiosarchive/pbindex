@@ -1,8 +1,14 @@
 #!/bin/sh
 
-last_prediction=$(curl -sL https://predictionbook.com/ | grep -o -P '/predictions/\d+' | sort -n | tail -n 1 | cut -d '/' -f 3)
+set -e
+
+last_prediction=$(curl -s https://predictionbook.com/happenstance/ | grep -o -P '/predictions/\d+' | sort -n | tail -n 1 | cut -d '/' -f 3)
+
 mkdir -p predictionbook
 cd predictionbook
-for i in $(seq 1 $last_prediction); do
-    wget "https://predictionbook.com/predictions/$i" -O $i
+rm -f .urls
+for i in $(seq $last_prediction); do
+	echo "https://predictionbook.com/predictions/$i" >> .urls
 done
+
+wget -i .urls
